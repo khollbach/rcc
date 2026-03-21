@@ -1,34 +1,11 @@
-use crate::lexer::{Keyword, Token};
+use crate::{
+    ast::{Ast, Expr, FunctionDef, Program, Statement},
+    token::{Keyword, Token},
+};
 
 use anyhow::{Context, Result, bail, ensure};
 
-#[derive(Debug)]
-pub struct Ast {
-    program: Program,
-}
-
-#[derive(Debug)]
-enum Program {
-    FunctionDef(FunctionDef),
-}
-
-#[derive(Debug)]
-struct FunctionDef {
-    name: String,
-    body: Statement,
-}
-
-#[derive(Debug)]
-enum Statement {
-    Return(Expr),
-}
-
-#[derive(Debug)]
-enum Expr {
-    Constant(i32),
-}
-
-pub fn parse_ast(tokens: &[Token]) -> Result<Ast> {
+pub fn parse(tokens: &[Token]) -> Result<Ast> {
     Parser { tokens }.parse()
 }
 

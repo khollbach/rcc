@@ -3,26 +3,9 @@ use std::sync::LazyLock;
 use anyhow::{Result, bail};
 use regex::Regex;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum Token {
-    Keyword(Keyword),
-    Ident(String),
-    Literal(i32),
-    LParen,
-    RParen,
-    LBrace,
-    RBrace,
-    Semi,
-}
+use crate::token::{Keyword, Token};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum Keyword {
-    Int,
-    Void,
-    Return,
-}
-
-pub fn tokenize(mut s: &str) -> Result<Vec<Token>> {
+pub fn lex(mut s: &str) -> Result<Vec<Token>> {
     let mut out = vec![];
 
     loop {

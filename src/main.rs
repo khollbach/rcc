@@ -1,13 +1,9 @@
 #![allow(unused_imports)] // for now
 
-mod lexer;
-mod parser;
-
+use std::fs;
 use std::fs::File;
-use std::io::prelude::*;
-use std::io::{self, Read, Write};
+use std::io::{Read, Write};
 use std::process::Command;
-use std::{env, fs};
 
 use anyhow::{Context, Result, ensure};
 use regex::Regex;
@@ -96,34 +92,34 @@ fn compile(i_file: &str, s_file: &str, stage: Stage) -> Result<()> {
     fs::remove_file(i_file)?;
 
     // seems reasonable!
-    let tokens = lexer::tokenize(&c_code)?;
+    let tokens = rcc::lex(&c_code)?;
     dbg!(&tokens);
 
     if stage == Stage::Lex {
         return Ok(());
     }
 
-    let ast = parser::parse_ast(&tokens)?;
-    dbg!(ast);
+    let ast = rcc::parse(tokens)?;
+    dbg!(&ast);
 
     if stage == Stage::Parse {
         return Ok(());
     }
 
-    let value = extract_return_value(&c_code)?;
-    dbg!(value);
+    let asm_ast = rcc::code_gen(ast)?;
+    dbg!(&asm_ast);
 
     if stage == Stage::CodeGen {
         return Ok(());
     }
 
-    let asm = generate_assembly(value);
-    print!("{asm}");
+    let asm = rcc::code_emit(asm_ast)?;
+    print!("{}", asm);
 
-    debug_assert_eq!(stage, Stage::CodeGen);
+    debug_assert_eq!(stage, Stage::CodeEmission);
 
-    let mut out_file = File::create(s_file)?;
-    out_file.write_all(asm.as_bytes())?;
+    let mut file = File::create(s_file)?;
+    file.write_all(asm.as_bytes())?;
 
     Ok(())
 }
@@ -135,28 +131,4 @@ fn assemble(s_file: &str, binary_file: &str) -> Result<()> {
         .success();
     ensure!(success, "failed to assemble");
     Ok(())
-}
-
-/// Only works for programs of the form:
-/// ```c
-/// int main(){return 2;}
-/// ```
-fn extract_return_value(c_code: &str) -> Result<i32> {
-    let re = r"^\s*int\s+main\s*\(\s*(void)?\s*\)\s*\{\s*return\s+(?<value>\d+)\s*;\s*\}\s*$";
-    let re = Regex::new(re).unwrap();
-    let caps = re.captures(c_code).context("regex")?;
-    let value = caps["value"].parse()?;
-    Ok(value)
-}
-
-/// Generate asm that returns a value (and doesn't do anything else).
-fn generate_assembly(return_value: i32) -> String {
-    format!(
-        "\
-    .globl main
-main:
-    movl ${return_value}, %eax
-    ret
-"
-    )
 }
