@@ -91,31 +91,19 @@ fn compile(i_file: &str, s_file: &str, stage: Stage) -> Result<()> {
 
     fs::remove_file(i_file)?;
 
-    // seems reasonable!
     let tokens = rcc::lex(&c_code)?;
-    dbg!(&tokens);
-
     if stage == Stage::Lex {
         return Ok(());
     }
-
     let ast = rcc::parse(tokens)?;
-    dbg!(&ast);
-
     if stage == Stage::Parse {
         return Ok(());
     }
-
     let asm_ast = rcc::code_gen(ast)?;
-    dbg!(&asm_ast);
-
     if stage == Stage::CodeGen {
         return Ok(());
     }
-
     let asm = rcc::code_emit(asm_ast)?;
-    print!("{}", asm);
-
     debug_assert_eq!(stage, Stage::CodeEmission);
 
     let mut file = File::create(s_file)?;
@@ -130,5 +118,8 @@ fn assemble(s_file: &str, binary_file: &str) -> Result<()> {
         .status()?
         .success();
     ensure!(success, "failed to assemble");
+
+    fs::remove_file(s_file)?;
+
     Ok(())
 }

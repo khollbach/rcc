@@ -6,10 +6,10 @@ mod ast;
 mod token;
 
 // compiler stages
+mod code_emit;
+mod code_gen;
 mod lexer;
 mod parser;
-mod code_gen;
-mod code_emit;
 
 use crate::{asm_ast::AsmAst, ast::Ast, token::Token};
 use anyhow::Result;
