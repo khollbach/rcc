@@ -1,6 +1,6 @@
 use crate::{
-    asm_ast::{AsmAst, AsmProgram, Instruction, Operand, RoutineDef},
-    ast::{Ast, Expr, FunctionDef, Program, Statement},
+    data_types::asm_ast::{AsmAst, AsmProgram, Instruction, Operand, RoutineDef},
+    data_types::ast::{Ast, Expr, FunctionDef, Program, Statement},
 };
 
 use anyhow::Result;

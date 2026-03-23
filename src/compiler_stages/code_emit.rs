@@ -1,4 +1,4 @@
-use crate::asm_ast::{AsmAst, AsmProgram, Instruction, Operand, RoutineDef};
+use crate::data_types::asm_ast::{AsmAst, AsmProgram, Instruction, Operand, RoutineDef};
 
 use anyhow::Result;
 

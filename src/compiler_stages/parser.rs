@@ -1,6 +1,6 @@
 use crate::{
-    ast::{Ast, Expr, FunctionDef, Program, Statement},
-    token::{Keyword, Token},
+    data_types::ast::{Ast, Expr, FunctionDef, Program, Statement},
+    data_types::token::{Keyword, Token},
 };
 
 use anyhow::{Context, Result, bail, ensure};

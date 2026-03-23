@@ -1,17 +1,12 @@
 #![allow(unused_imports)] // for now
 
-// data types
-mod asm_ast;
-mod ast;
-mod token;
+mod compiler_stages;
+mod data_types;
 
-// compiler stages
-mod code_emit;
-mod code_gen;
-mod lexer;
-mod parser;
-
-use crate::{asm_ast::AsmAst, ast::Ast, token::Token};
+use crate::{
+    compiler_stages::{code_emit, code_gen, lexer, parser},
+    data_types::{asm_ast::AsmAst, ast::Ast, token::Token},
+};
 use anyhow::Result;
 
 /// Compile a C program into x64 assembly.

@@ -3,7 +3,7 @@ use std::sync::LazyLock;
 use anyhow::{Result, bail};
 use regex::Regex;
 
-use crate::token::{Keyword, Token};
+use crate::data_types::token::{Keyword, Token};
 
 pub fn lex(mut s: &str) -> Result<Vec<Token>> {
     let mut out = vec![];
